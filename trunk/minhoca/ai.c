@@ -8,10 +8,6 @@
 
 #include "ai.h"
 
-typedef struct {
-        unsigned int mode;
-        posxy target;
-} minhocabrain;
 
 // motor de demencia
 int ai_run(minhocabrain *brain, posxy *currpos, posxy *food, int hasfood, int dir) {

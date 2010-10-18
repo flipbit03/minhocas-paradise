@@ -1,3 +1,5 @@
+#define BASICDEFS_H
+
 // Basic defs
 #define TRUE 1
 #define FALSE 0

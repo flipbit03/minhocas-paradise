@@ -1,15 +1,23 @@
 #include <stdlib.h>
 #include "snake.h" // snake datatype
 
-snake initsnake(int xpos, int ypos, int snakesize) {
+void initsnake(snake *retval, int xpos, int ypos, int snakesize) {
 	int i;
-	snake retval;
-	retval.data = (posxy *) malloc(sizeof(posxy)*snakesize);
-	retval.size = snakesize;
-	retval.hpos = 0;
+	retval->data = (posxy *) malloc(sizeof(posxy)*snakesize);
+	retval->size = snakesize;
+	retval->hpos = 0;
 	for(i = 0; i < snakesize; i++) {
-		(retval.data+i)->x = xpos;
-		(retval.data+i)->y = ypos;
+		(retval->data+i)->x = xpos;
+		(retval->data+i)->y = ypos;
+	}
+}
+
+
+void growsnake(snake *dsnake, int n) {
+	dsnake->size += 2;
+	if ((dsnake->data = (posxy *) realloc(dsnake->data, sizeof(posxy)*dsnake->size)) == NULL) {
+		printf("Error: Cannot grow snake --> Out of Memory!!!\n");
+		exit(1);
 	}
 }
 
