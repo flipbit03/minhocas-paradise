@@ -17,9 +17,6 @@
 #include "fonte.h"
 #include "snake.h"
 
-/* brain */
-minhocabrain brain;
-
 /* option vars */
 int fps = 30;
 int mspf = 0; 
@@ -85,7 +82,9 @@ int main(int argc, char *argv)
 	int hasfood = 0;
 	
 	/* Snake's variables */
-	snake thesnake;
+	minhocabrain brain;	/* brain */
+	snake thesnake;		/* data, size, direction */
+	brain.s = &thesnake;
 	
 	/* SDL/Drawing Support variables */
 	SDL_Surface *screen;
@@ -96,7 +95,6 @@ int main(int argc, char *argv)
 	long unsigned int score = 0;
 	int roda = 1;
 	int checkgo = 0;
-	int direcao = RIGHT;
 	int chdir = 0;
 
 	// ---------------------
@@ -106,7 +104,7 @@ int main(int argc, char *argv)
 	//srand((unsigned int)3);	
 
 	// Create one snake
-	initsnake(&thesnake, fieldx/2, fieldy/2, 5);
+	initsnake(&thesnake, fieldx/2, fieldy/2, 5, RIGHT);
 
 	// Calculate Snake's Initial Position
 
@@ -135,10 +133,10 @@ while(roda == 1) {
 		switch(event.type) {
 			case SDL_KEYDOWN:
 				if (event.key.keysym.sym == SDLK_q) roda = 0;
-				if (event.key.keysym.sym == SDLK_LEFT && direcao != RIGHT) { direcao = LEFT; chdir = 1;}
-				if (event.key.keysym.sym == SDLK_RIGHT && direcao != LEFT) { direcao = RIGHT; chdir = 1;}
-				if (event.key.keysym.sym == SDLK_UP && direcao != DOWN) { direcao = UP; chdir = 1;}
-				if (event.key.keysym.sym == SDLK_DOWN && direcao != UP) { direcao = DOWN; chdir = 1;}
+				if (event.key.keysym.sym == SDLK_LEFT && brain.s->dir != RIGHT) { brain.s->dir = LEFT; chdir = 1;}
+				if (event.key.keysym.sym == SDLK_RIGHT && brain.s->dir != LEFT) { brain.s->dir = RIGHT; chdir = 1;}
+				if (event.key.keysym.sym == SDLK_UP && brain.s->dir != DOWN) { brain.s->dir = UP; chdir = 1;}
+				if (event.key.keysym.sym == SDLK_DOWN && brain.s->dir != UP) { brain.s->dir = DOWN; chdir = 1;}
 			break;
 		}
 	}
@@ -179,12 +177,12 @@ while(roda == 1) {
 	}
 
 	/* ai test */
-	direcao = ai_run(&brain, snakehead(&thesnake), &food, hasfood, direcao);
+	ai_run(&brain, &food, hasfood, fieldx, fieldy);
 
 	/* Calculate HEAD */
 	thesnake.hpos = (thesnake.hpos+(thesnake.size-1))%thesnake.size;
 
-	switch(direcao) {
+	switch(brain.s->dir) {
 		case UP:
 			snakehead(&thesnake)->x = snakeneck(&thesnake)->x;
 			snakehead(&thesnake)->y = (snakeneck(&thesnake)->y + (fieldy-1))%fieldy;

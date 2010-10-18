@@ -1,3 +1,4 @@
+#ifndef BASICDEFS_H
 #define BASICDEFS_H
 
 // Basic defs
@@ -15,3 +16,5 @@ typedef struct {
         int x;
         int y;
 } posxy;
+
+#endif /* BASICDEFS_H */
