@@ -1,8 +1,10 @@
+#include <stdio.h>
 #include <stdlib.h>
 #include "snake.h" // snake datatype
 
-void initsnake(snake *retval, int xpos, int ypos, int snakesize) {
+void initsnake(snake *retval, int xpos, int ypos, int snakesize, int dir) {
 	int i;
+	retval->dir = dir;
 	retval->data = (posxy *) malloc(sizeof(posxy)*snakesize);
 	retval->size = snakesize;
 	retval->hpos = 0;
