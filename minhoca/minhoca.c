@@ -12,9 +12,10 @@
 #define SNAKECOLORG 255
 #define SNAKECOLORB 0
 
-//#include "basicdefs.h"
+#include "basicdefs.h"
 #include "ai.h"
-
+#include "fonte.h"
+#include "snake.h"
 
 /* brain */
 minhocabrain brain;
@@ -104,7 +105,8 @@ int main(int argc, char *argv)
 	srand((unsigned int)time(NULL));
 
 
-	// Allocate memory for snake
+	// Create one snake
+	initsnake(&thesnake, fieldx/2, fieldy/2, 5);
 
 	// Calculate Snake's Initial Position
 
@@ -142,43 +144,43 @@ while(roda == 1) {
 	}
 
 	/* ai test */
-	direcao = ai_run(&brain, snakehead(), &food, hasfood, direcao);
+	direcao = ai_run(&brain, snakehead(&thesnake), &food, hasfood, direcao);
 
 	/* Erase TAIL */
 
-	headdraw.x = (snaketail()->x)*SNAKEWIDTH;
-	headdraw.y = (snaketail()->y)*SNAKEHEIGHT;
+	headdraw.x = (snaketail(&thesnake)->x)*SNAKEWIDTH;
+	headdraw.y = (snaketail(&thesnake)->y)*SNAKEHEIGHT;
 	headdraw.w = SNAKEWIDTH;
 	headdraw.h = SNAKEHEIGHT;
 	SDL_FillRect(screen, &headdraw, SDL_MapRGB(screen->format, 0, 0, 0));
 
 	/* Calculate and print HEAD */
-	headpos = (headpos+(snakesize-1))%snakesize;
+	thesnake.hpos = (thesnake.hpos+(thesnake.size-1))%thesnake.size;
 
 	switch(direcao) {
 		case UP:
-			snakehead()->x = snakeneck()->x;
-			snakehead()->y = (snakeneck()->y + (fieldy-1))%fieldy;
+			snakehead(&thesnake)->x = snakeneck(&thesnake)->x;
+			snakehead(&thesnake)->y = (snakeneck(&thesnake)->y + (fieldy-1))%fieldy;
 			break;
 		case DOWN:
-			snakehead()->x = snakeneck()->x;
-			snakehead()->y = (snakeneck()->y + 1)%fieldy;
+			snakehead(&thesnake)->x = snakeneck(&thesnake)->x;
+			snakehead(&thesnake)->y = (snakeneck(&thesnake)->y + 1)%fieldy;
 			break;
 		case LEFT:
-			snakehead()->x = (snakeneck()->x + (fieldx-1))%fieldx;
-			snakehead()->y = snakeneck()->y;
+			snakehead(&thesnake)->x = (snakeneck(&thesnake)->x + (fieldx-1))%fieldx;
+			snakehead(&thesnake)->y = snakeneck(&thesnake)->y;
 			break;
 		case RIGHT:
-			snakehead()->x = (snakeneck()->x + 1)%fieldx;
-			snakehead()->y = snakeneck()->y;
+			snakehead(&thesnake)->x = (snakeneck(&thesnake)->x + 1)%fieldx;
+			snakehead(&thesnake)->y = snakeneck(&thesnake)->y;
 			break;
 	}
 	
 	/* Detect game over */
 	
-	for ( checkgo = 3; checkgo <= (snakesize-1) ; checkgo++) {
-		if ((snakehead()->x == (snake+((headpos+checkgo)%snakesize))->x) &&
-			(snakehead()->y == (snake+((headpos+checkgo)%snakesize))->y)) roda = 0;
+	for ( checkgo = 3; checkgo <= (thesnake.size-1) ; checkgo++) {
+		if ((snakehead(&thesnake)->x == (thesnake.data+((thesnake.hpos+checkgo)%thesnake.size))->x) &&
+			(snakehead(&thesnake)->y == (thesnake.data+((thesnake.hpos+checkgo)%thesnake.size))->y)) roda = 0;
 	}
 
 	// create new food that doesn't overlaps with snake!
@@ -189,9 +191,9 @@ while(roda == 1) {
 			food.y = rand()%fieldy;
 			//food.y = 10;
 			
-			for ( checkgo = 0; checkgo <= (snakesize-1) ; checkgo++) {
-				if ((food.x == (snake+((headpos+checkgo)%snakesize))->x) &&
-				(food.y == (snake+((headpos+checkgo)%snakesize))->y)) 
+			for ( checkgo = 0; checkgo <= (thesnake.size-1) ; checkgo++) {
+				if ((food.x == (thesnake.data+((thesnake.hpos+checkgo)%thesnake.size))->x) &&
+				(food.y == (thesnake.data+((thesnake.hpos+checkgo)%thesnake.size))->y)) 
 				hit = 1;
 			}
 
@@ -201,27 +203,23 @@ while(roda == 1) {
 	
 	// food on screen? draw.
 	if(hasfood) {	
-	headdraw.x = food.x*SNAKEWIDTH;
-			headdraw.y = food.y*SNAKEHEIGHT;
-			headdraw.w = SNAKEWIDTH;
-			headdraw.h = SNAKEHEIGHT;
-			SDL_FillRect(screen, &headdraw, SDL_MapRGB(screen->format, 255, 255, 0));
+		headdraw.x = food.x*SNAKEWIDTH;
+		headdraw.y = food.y*SNAKEHEIGHT;
+		headdraw.w = SNAKEWIDTH;
+		headdraw.h = SNAKEHEIGHT;
+		SDL_FillRect(screen, &headdraw, SDL_MapRGB(screen->format, 255, 255, 0));
 	}
 
 	// Food eaten?
-	if( (snakehead()->x ==	food.x) && (snakehead()->y == food.y) ) {
+	if( (snakehead(&thesnake)->x ==	food.x) && (snakehead(&thesnake)->y == food.y) ) {
 		hasfood = 0;
 		score += 10;
-		snakesize += 2;
-		if ((snake = (posxy *) realloc(snake, sizeof(posxy)*++snakesize)) == NULL) {
-			printf("Error: OOM!!!\n");
-			exit(1);
-		}
+		growsnake(&thesnake, 2);
 	}
 	
 	// Draw HEAD
-	headdraw.x = (snakehead()->x)*SNAKEWIDTH;
-	headdraw.y = (snakehead()->y)*SNAKEHEIGHT;
+	headdraw.x = (snakehead(&thesnake)->x)*SNAKEWIDTH;
+	headdraw.y = (snakehead(&thesnake)->y)*SNAKEHEIGHT;
 	headdraw.w = SNAKEWIDTH;
 	headdraw.h = SNAKEHEIGHT;
 	SDL_FillRect(screen, &headdraw, SDL_MapRGB(screen->format, SNAKECOLORR, SNAKECOLORG, SNAKECOLORB));

@@ -1,4 +1,6 @@
+#ifndef BASICDEFS_H
 #include "basicdefs.h"
+#endif
 
 typedef struct {
         unsigned int mode;
