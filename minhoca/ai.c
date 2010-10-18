@@ -1,13 +1,11 @@
 #include <stdlib.h>
 #include <math.h>
-#include <SDL.h>
 
 // Minhoca's AI modes
 #define M_ROAMING 128
 #define M_HUNTING 64
 
 #include "ai.h"
-
 
 // motor de demencia
 int ai_run(minhocabrain *brain, posxy *currpos, posxy *food, int hasfood, int dir) {

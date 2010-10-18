@@ -21,7 +21,7 @@
 minhocabrain brain;
 
 /* option vars */
-int fps = 60;
+int fps = 30;
 int mspf = 0; 
 Uint32 before, after;
 
@@ -103,7 +103,7 @@ int main(int argc, char *argv)
 
 	// Initialize random number generator with time.
 	srand((unsigned int)time(NULL));
-
+	//srand((unsigned int)3);	
 
 	// Create one snake
 	initsnake(&thesnake, fieldx/2, fieldy/2, 5);
@@ -143,46 +143,14 @@ while(roda == 1) {
 		}
 	}
 
-	/* ai test */
-	direcao = ai_run(&brain, snakehead(&thesnake), &food, hasfood, direcao);
 
 	/* Erase TAIL */
-
 	headdraw.x = (snaketail(&thesnake)->x)*SNAKEWIDTH;
 	headdraw.y = (snaketail(&thesnake)->y)*SNAKEHEIGHT;
 	headdraw.w = SNAKEWIDTH;
 	headdraw.h = SNAKEHEIGHT;
 	SDL_FillRect(screen, &headdraw, SDL_MapRGB(screen->format, 0, 0, 0));
-
-	/* Calculate and print HEAD */
-	thesnake.hpos = (thesnake.hpos+(thesnake.size-1))%thesnake.size;
-
-	switch(direcao) {
-		case UP:
-			snakehead(&thesnake)->x = snakeneck(&thesnake)->x;
-			snakehead(&thesnake)->y = (snakeneck(&thesnake)->y + (fieldy-1))%fieldy;
-			break;
-		case DOWN:
-			snakehead(&thesnake)->x = snakeneck(&thesnake)->x;
-			snakehead(&thesnake)->y = (snakeneck(&thesnake)->y + 1)%fieldy;
-			break;
-		case LEFT:
-			snakehead(&thesnake)->x = (snakeneck(&thesnake)->x + (fieldx-1))%fieldx;
-			snakehead(&thesnake)->y = snakeneck(&thesnake)->y;
-			break;
-		case RIGHT:
-			snakehead(&thesnake)->x = (snakeneck(&thesnake)->x + 1)%fieldx;
-			snakehead(&thesnake)->y = snakeneck(&thesnake)->y;
-			break;
-	}
 	
-	/* Detect game over */
-	
-	for ( checkgo = 3; checkgo <= (thesnake.size-1) ; checkgo++) {
-		if ((snakehead(&thesnake)->x == (thesnake.data+((thesnake.hpos+checkgo)%thesnake.size))->x) &&
-			(snakehead(&thesnake)->y == (thesnake.data+((thesnake.hpos+checkgo)%thesnake.size))->y)) roda = 0;
-	}
-
 	// create new food that doesn't overlaps with snake!
 	if(!hasfood) {
 			int hit = 0;
@@ -209,6 +177,38 @@ while(roda == 1) {
 		headdraw.h = SNAKEHEIGHT;
 		SDL_FillRect(screen, &headdraw, SDL_MapRGB(screen->format, 255, 255, 0));
 	}
+
+	/* ai test */
+	direcao = ai_run(&brain, snakehead(&thesnake), &food, hasfood, direcao);
+
+	/* Calculate HEAD */
+	thesnake.hpos = (thesnake.hpos+(thesnake.size-1))%thesnake.size;
+
+	switch(direcao) {
+		case UP:
+			snakehead(&thesnake)->x = snakeneck(&thesnake)->x;
+			snakehead(&thesnake)->y = (snakeneck(&thesnake)->y + (fieldy-1))%fieldy;
+			break;
+		case DOWN:
+			snakehead(&thesnake)->x = snakeneck(&thesnake)->x;
+			snakehead(&thesnake)->y = (snakeneck(&thesnake)->y + 1)%fieldy;
+			break;
+		case LEFT:
+			snakehead(&thesnake)->x = (snakeneck(&thesnake)->x + (fieldx-1))%fieldx;
+			snakehead(&thesnake)->y = snakeneck(&thesnake)->y;
+			break;
+		case RIGHT:
+			snakehead(&thesnake)->x = (snakeneck(&thesnake)->x + 1)%fieldx;
+			snakehead(&thesnake)->y = snakeneck(&thesnake)->y;
+			break;
+	}
+
+	/* Detect game over */
+	for ( checkgo = 3; checkgo <= (thesnake.size-1) ; checkgo++) {
+		if ((snakehead(&thesnake)->x == (thesnake.data+((thesnake.hpos+checkgo)%thesnake.size))->x) &&
+			(snakehead(&thesnake)->y == (thesnake.data+((thesnake.hpos+checkgo)%thesnake.size))->y)) roda = 0;
+	}
+
 
 	// Food eaten?
 	if( (snakehead(&thesnake)->x ==	food.x) && (snakehead(&thesnake)->y == food.y) ) {
