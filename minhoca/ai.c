@@ -4,7 +4,7 @@
 #include "ai.h"
 #include "snake.h"
 
-// motor de demencia
+// motor de estupidez
 void ai_run(minhocabrain *brain, posxy *food, int hasfood, int fieldx, int fieldy) {
 	int retval = 0;
 
@@ -21,6 +21,7 @@ void ai_run(minhocabrain *brain, posxy *food, int hasfood, int fieldx, int field
 		int xdist, ydist;
 		xdist = snakehead(brain->s)->x - food->x; // <0 right >0 left
 		ydist = snakehead(brain->s)->y - food->y; // <0 bottom >0 up
+			 
 		retval = brain->s->dir;
 		if (abs(xdist) == abs(ydist)) {
 			if (ydist < 0)
@@ -71,7 +72,27 @@ void ai_run(minhocabrain *brain, posxy *food, int hasfood, int fieldx, int field
 
 
 		}
+	
+		// Calculate if it's easier/nearer to go through the borders (side flip)
+		if(retval == LEFT) {
+			if ((abs(xdist) > fieldx/2) && brain->s->dir != LEFT) retval *= -1;
+		} 
+		else if (retval == RIGHT) {
+			if ((abs(xdist) > fieldx/2) && brain->s->dir != RIGHT) retval *= -1;
+		} 
+		else if(retval == UP) {
+			if ((abs(ydist) > fieldy/2) && brain->s->dir != UP) retval *= -1;
+		} 
+		else if(retval == DOWN) {
+			if ((abs(ydist) > fieldy/2) && brain->s->dir != DOWN) retval *= -1;
+		} 
+
+		//else {	
+		//if (abs(ydist) > fieldy/2) retval *= -1;
+		//}
+
 	}
+
 	brain->s->dir = retval;
 }
 

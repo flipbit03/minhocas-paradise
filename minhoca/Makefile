@@ -15,7 +15,7 @@ fonte.o: fonte.c fonte.h
 ai.o: ai.c ai.h
 	$(CC) -c $^ $(SDLCFLAGS) -g
 
-minhoca.o: minhoca.c
+minhoca.o: minhoca.c basicdefs.h
 	$(CC) -c $^ $(SDLCFLAGS) -g
 
 clean:
