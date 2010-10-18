@@ -18,7 +18,7 @@
 #include "snake.h"
 
 /* option vars */
-int fps = 30;
+int fps = 90;
 int mspf = 0; 
 Uint32 before, after;
 
@@ -100,7 +100,10 @@ int main(int argc, char *argv)
 	// ---------------------
 
 	// Initialize random number generator with time.
-	srand((unsigned int)time(NULL));
+	unsigned int seed = (unsigned int)time(NULL);
+	//seed = 1287422309;
+	srand(seed);
+	printf("seed -> %u\n",seed);
 	//srand((unsigned int)3);	
 
 	// Create one snake
