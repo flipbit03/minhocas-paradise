@@ -12,7 +12,6 @@ void initsnake(snake *retval, int xpos, int ypos, int snakesize) {
 	}
 }
 
-
 void growsnake(snake *dsnake, int n) {
 	dsnake->size += 2;
 	if ((dsnake->data = (posxy *) realloc(dsnake->data, sizeof(posxy)*dsnake->size)) == NULL) {
