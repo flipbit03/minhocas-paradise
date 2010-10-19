@@ -30,7 +30,7 @@ int surfaceparams = SDL_SWSURFACE; // -f
 void parse_cmd(int argc,char* argv)
 {
 	int opt;
-	while ( (opt=getopt(argc, (char * const*)argv, "x:y:b:f")) != -1) {
+	while ( (opt=getopt(argc, (char * const*)argv, "x:y:b:fs:")) != -1) {
 		switch(opt) {
 			case 'x':
 				xres = atoi(optarg);
@@ -44,8 +44,11 @@ void parse_cmd(int argc,char* argv)
 			case 'f':
 				surfaceparams |= SDL_FULLSCREEN;
 				break;
+			case 's':
+				fps = atoi(optarg);
+				break;
 			default: // _?????
-				printf("Minhoca's Paradise:\n-x n\tX res\n-y n\tY res\n-b n\tBPP\n-f\tFULLSCREEN\n");
+				printf("Minhoca's Paradise:\n-x n\tX res\n-y n\tY res\n-b n\tBPP\n-f\tFULLSCREEN\n-s\tFPS\n");
 				exit(1);
 		}
 	}
@@ -67,11 +70,11 @@ int video_init()
 
 int main(int argc, char *argv)
 {
-	// Calculate desired FPS
-	mspf = 100000/fps;
-
 	// get params
 	parse_cmd(argc, argv);
+
+	// Calculate desired FPS
+	mspf = 100000/fps;
 
 	/* Field's variables */
 	int fieldx = (xres/SNAKEWIDTH);
@@ -101,7 +104,7 @@ int main(int argc, char *argv)
 
 	// Initialize random number generator with time.
 	unsigned int seed = (unsigned int)time(NULL);
-	//seed = 1287422309;
+	//seed = 1287429859;
 	srand(seed);
 	printf("seed -> %u\n",seed);
 	//srand((unsigned int)3);	
