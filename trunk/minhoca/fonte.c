@@ -2,8 +2,8 @@
 #include <stdio.h>
 #include <SDL.h>
 
-#define PSIZEX 4
-#define PSIZEY 4
+#define PSIZEX 10
+#define PSIZEY 10
 
 #define FONTX 3
 #define FONTY 5

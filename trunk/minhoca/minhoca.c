@@ -104,13 +104,13 @@ int main(int argc, char *argv)
 
 	// Initialize random number generator with time.
 	unsigned int seed = (unsigned int)time(NULL);
-	//seed = 1287429859;
+	//seed = 1288305000;
 	srand(seed);
 	printf("seed -> %u\n",seed);
 	//srand((unsigned int)3);	
 
 	// Create one snake
-	initsnake(&thesnake, fieldx/2, fieldy/2, 5, RIGHT);
+	initsnake(&thesnake, fieldx/2, fieldy/2, 1, RIGHT);
 
 	// Calculate Snake's Initial Position
 
