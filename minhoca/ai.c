@@ -1,3 +1,4 @@
+#include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
 
@@ -24,7 +25,7 @@ void ai_run(minhocabrain *brain, posxy *food, int hasfood, int fieldx, int field
 		int xdist, ydist, nxdist, nydist, ixdist, iydist;
 
 		// check hit var
-		int i,diroptions[3];
+		int i, diroptions[5], ficthit = 0, foundbest = 0;
 		int checkgo;
 
 		nxdist = snakehead(brain->s)->x - food->x; // <0 right >0 left
@@ -35,12 +36,12 @@ void ai_run(minhocabrain *brain, posxy *food, int hasfood, int fieldx, int field
 		if(nxdist > 0) ixdist *= -1;
 		if(nydist > 0) iydist *= -1;
 
-		if (abs(nxdist) <= abs(ixdist) ) 
+		if (abs(nxdist) <= abs(ixdist))
 			xdist = nxdist;
 		else
 			xdist = ixdist;
 
-		if (abs(nydist) <= abs (iydist) ) 
+		if (abs(nydist) <= abs (iydist)) 
 			ydist = nydist;
 		else
 			ydist = iydist;
@@ -95,10 +96,19 @@ void ai_run(minhocabrain *brain, posxy *food, int hasfood, int fieldx, int field
 
 // FIXME
 	diroptions[0] = retval;
-	diroptions[1] = retval * -1;
-	diroptions[2] = brain->s->dir;
-		
-	for( i = 0 ; i < 3 ; i++ ) {
+	if (retval == UP || retval == DOWN)
+		diroptions[2] = RIGHT;
+	else
+		diroptions[2] = DOWN;
+	diroptions[1] = retval*-1;
+	if (retval == UP || retval == DOWN)
+		diroptions[3] = LEFT;
+	else
+		diroptions[3] = UP;
+	diroptions[4] = brain->s->dir;
+	
+	for ( i = 0 ; i < 5 ; i++ ) {
+		ficthit = 0;
 		ficthead.x = snakehead(brain->s)->x;
 		ficthead.y = snakehead(brain->s)->y;
 
@@ -118,18 +128,26 @@ void ai_run(minhocabrain *brain, posxy *food, int hasfood, int fieldx, int field
 		}
 	
         	/* Detect hit/unavailable direction */
-	        for ( checkgo = 0; checkgo <= (brain->s->size-1) ; checkgo++) {
-        	        if (!((ficthead.x == (brain->s->data+((brain->s->hpos+checkgo)%brain->s->size))->x) &&
-                	        (ficthead.y == (brain->s->data+((brain->s->hpos+checkgo)%brain->s->size))->y)))
-				
-				retval = diroptions[i];
-        	}
-		
-	}
+	        for ( checkgo = 1; checkgo < (brain->s->size) ; checkgo++) {
+        	        if ((ficthead.x == (brain->s->data+((brain->s->hpos+checkgo)%brain->s->size))->x) &&
+                	        (ficthead.y == (brain->s->data+((brain->s->hpos+checkgo)%brain->s->size))->y)) {
+					ficthit = 1;	
+					foundbest = 0;
+			}		
+		}
 
+		if (!ficthit)
+			foundbest = 1;
 
+		if(foundbest) {
+			retval = diroptions[i];
+			break;
+		}
 	}
+	
 	brain->s->dir = retval;
+	}
+
 }
 
 
