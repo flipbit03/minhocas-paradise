@@ -66,7 +66,6 @@ int video_init()
 	
 }
 
-
 int main(int argc, char *argv[])
 {
 	// get params
