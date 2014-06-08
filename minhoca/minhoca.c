@@ -22,10 +22,14 @@ int fps = 90;
 int mspf = 0; 
 Uint32 before, after;
 
-int xres = 320; // -x
-int yres = 240; // -y
+int xres = 640; // -x
+int yres = 480; // -y
 int bpp = 8; // -b
 int surfaceparams = SDL_SWSURFACE; // -f
+
+void banner() {
+	printf("Minhocas Paradise: Run it with -? for more options...\n");
+}
 
 void parse_cmd(int argc,char **argv)
 {
@@ -104,6 +108,7 @@ int main(int argc, char *argv[])
 	unsigned int seed = (unsigned int)time(NULL);
 	//seed = 1288305000;
 	srand(seed);
+	banner();
 	printf("seed -> %u\n",seed);
 	//srand((unsigned int)3);	
 
@@ -125,7 +130,7 @@ int main(int argc, char *argv[])
 	number = plotlongnumber(score);
 /* Main Loop*/
 while(roda == 1) {
-	before = SDL_GetTicks()*100;
+	before = SDL_GetTicks();
 
 	// Score
 	SDL_BlitSurface(number, NULL, screen, &dst);
@@ -234,10 +239,10 @@ while(roda == 1) {
 	SDL_Flip(screen);
 
 	// Limit framerate
-	after = mspf - (SDL_GetTicks()*100 - before);
-	if ((long int)after>0) {
+	after =   500000 + mspf - (SDL_GetTicks() - before);
+	if (after>500000) {
 //		printf("%d\n",after/100);
-		SDL_Delay((long int)(after/100));
+		SDL_Delay((after-500000)/100);
 	}
 
 	}
