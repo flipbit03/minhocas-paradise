@@ -27,10 +27,10 @@ int yres = 240; // -y
 int bpp = 8; // -b
 int surfaceparams = SDL_SWSURFACE; // -f
 
-void parse_cmd(int argc,char* argv)
+void parse_cmd(int argc,char **argv)
 {
 	int opt;
-	while ( (opt=getopt(argc, (char * const*)argv, "x:y:b:fs:")) != -1) {
+	while ( (opt=getopt(argc, argv, "x:y:b:fs:")) != -1) {
 		switch(opt) {
 			case 'x':
 				xres = atoi(optarg);
@@ -67,8 +67,7 @@ int video_init()
 }
 
 
-
-int main(int argc, char *argv)
+int main(int argc, char *argv[])
 {
 	// get params
 	parse_cmd(argc, argv);
