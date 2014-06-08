@@ -2,8 +2,10 @@ CC = gcc
 
 SDLLIBS = $(shell sdl-config --libs)
 SDLCFLAGS = $(shell sdl-config --cflags)
-CFLAGS= -g3
 
+CFLAGS= -g0
+
+all: minhoca
 
 minhoca: minhoca.o fonte.o ai.o snake.o
 	$(CC) -o $@ $^ $(SDLLIBS) $(CFLAGS)
